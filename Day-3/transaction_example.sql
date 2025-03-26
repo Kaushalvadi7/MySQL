@@ -26,16 +26,33 @@ UPDATE users SET balance = balance - 500 WHERE user_id = 1;
 COMMIT;
 
 START TRANSACTION;
-UPDATE bookings SET user_id = 2, status = 'BOOKED' WHERE seat_no = 2;
+UPDATE bookings SET user_id = Null, status = 'BOOKED' WHERE seat_no = 2;
 UPDATE users SET balance = balance - 600 WHERE user_id = 2;
-COMMIT;
 ROLLBACK;
+COMMIT;
 
 
+START TRANSACTION;
+
+UPDATE bookings SET user_id = 2, status = 'BOOKED' WHERE seat_no = 2;
+SAVEPOINT seat_assigned;
+
+UPDATE users SET balance = balance - 500 WHERE user_id = 2;
+SAVEPOINT payment_deducted;
+
+ROLLBACK TO SAVEPOINT seat_assigned;
+
+COMMIT;
 
 
 
 select * from users;
 select * from bookings;
+
+-- drop database TicketBookingDB;
+
+
+create database kaushal;
+drop database kaushal;
 
 
